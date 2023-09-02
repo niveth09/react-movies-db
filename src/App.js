@@ -1,36 +1,53 @@
-import logo from "./logo.svg";
-import "./App.css";
 import { Component } from "react";
-import APIs from "./components/interceptor/Apis";
+import "./App.css";
+import CardList from "./components/card-list/card-list.component";
+import SearchBox from "./components/search-box/search-box.component";
+import {
+  PRE_API_URL,
+  getMoviesUrl,
+  options,
+} from "./string-constants/api-urls";
 class App extends Component {
   constructor() {
     super();
 
     this.state = {
       movies: [],
+      searchField: "",
     };
   }
-  componentDidMount() {
-    fetch("https://jsonplaceholder.typicode.com/posts")
+  filterMovies = (searchQuery) => {
+    options.method = "GET";
+    fetch(
+      PRE_API_URL +
+        `search/movie?query=${searchQuery}&include_adult=false&language=en-US&page=1`,
+      options
+    )
       .then((res) => res.json())
-      .then((json) =>
+      .then((resJson) => {
+        this.setState({ movies: resJson });
+      });
+  };
+  getMovies() {
+    options.method = "GET";
+    const getMoviesFullUrl = PRE_API_URL + getMoviesUrl;
+    fetch(getMoviesFullUrl, options)
+      .then((res) => res.json())
+      .then((json) => {
         this.setState(() => {
           return { movies: json };
-        })
-      );
+        });
+      });
   }
+  componentDidMount() {
+    this.getMovies();
+  }
+
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          {this.state.movies.map((movie) => {
-            return (
-              <div key={movie.id} class="movie">
-                {movie.title}
-              </div>
-            );
-          })}
-        </header>
+        <SearchBox onHandleSearchQuery={this.filterMovies} />
+        <CardList filteredMovies={this.state.movies} />
       </div>
     );
   }
