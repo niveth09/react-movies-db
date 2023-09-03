@@ -3,30 +3,18 @@ import { getMoviesList } from "../../services/Api.service";
 import { Card } from "../card/card.component";
 import "./card-list.styles.css";
 
-class CardList extends Component {
-  constructor() {
-    super();
+const CardList = (props) => {
+  //     //   let moviesDetails = async () => this.setState(() => { await getMoviesList() });
 
-    this.state = {
-      movies: [],
-    };
-  }
-  componentDidMount() {
-    //   let moviesDetails = async () => this.setState(() => { await getMoviesList() });
-    // console.log(moviesDetails);
-  }
-  render() {
-    const filteredMovies = this.props.filteredMovies.results;
-    console.log(filteredMovies);
+  const filteredMovies = props.filteredMovies?.movies?.results;
 
-    return filteredMovies ? (
-      <div className="card-list">
-        {filteredMovies.map((movie) => {
-          return <Card movie={movie} />;
-        })}
-      </div>
-    ) : null;
-  }
-}
+  return filteredMovies ? (
+    <div className="card-list">
+      {filteredMovies.map((movie) => {
+        return <Card movie={movie} />;
+      })}
+    </div>
+  ) : null;
+};
 
 export default CardList;
